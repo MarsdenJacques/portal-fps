@@ -33,11 +33,11 @@ public class PlayerMovement : MonoBehaviour
             Debug.Log(scanForLayers[layer] + "");
             scanForMask |= mask;
         }*/
-        int mask = 1 << 10;
+        int mask = 3072;// 1 << 10;
+        //scanForMask &= mask;
+        //mask &= 2047;//1 << 11;
+        Debug.Log(mask);
         scanForMask |= mask;
-        mask = 1 << 11;
-        scanForMask |= mask;
-        scanForMask = (scanForMask);
     }
 
     // Update is called once per frame
@@ -96,9 +96,6 @@ public class PlayerMovement : MonoBehaviour
         int collisions = Physics.OverlapCapsuleNonAlloc(bottom, top, enemyCheckDistance, collisionResults, scanForMask);
         for (int collision = 0; collision < collisions; collision++)
         {
-            Debug.Log("test");
-            Debug.Log(collisions);
-            Debug.Log(collisionResults[0].gameObject.name);
             Damageable enemy = collisionResults[collision].gameObject.GetComponent<Damageable>();
             if (enemy != null)
             {
@@ -109,7 +106,7 @@ public class PlayerMovement : MonoBehaviour
             if (portal != null)
             {
                 Debug.Log("test3");
-                portal.Teleport(gameObject);
+                portal.Teleport(player.gameObject);
             }
         }
     }
