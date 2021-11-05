@@ -111,7 +111,22 @@ public class EnemyManager : MonoBehaviour
     {
         for(int i = 0; i < amount; i++)
         {
-            Enemy spawned = GameObject.Instantiate(hunter, new Vector3(1.0f, 1.0f, 1.0f), Quaternion.identity).GetComponent<Enemy>();
+            Enemy spawned = GameObject.Instantiate(hunter, new Vector3(100.0f, 1.0f, 80.0f), Quaternion.identity).GetComponent<Enemy>();
+            spawned.SetTarget(player);
+        }
+        for (int i = 0; i < amount; i++)
+        {
+            Enemy spawned = GameObject.Instantiate(hunter, new Vector3(-120.0f, 1.0f, 80.0f), Quaternion.identity).GetComponent<Enemy>();
+            spawned.SetTarget(player);
+        }
+        for (int i = 0; i < amount; i++)
+        {
+            Enemy spawned = GameObject.Instantiate(hunter, new Vector3(100.0f, 1.0f, -100.0f), Quaternion.identity).GetComponent<Enemy>();
+            spawned.SetTarget(player);
+        }
+        for (int i = 0; i < amount; i++)
+        {
+            Enemy spawned = GameObject.Instantiate(hunter, new Vector3(-120.0f, 1.0f, -100.0f), Quaternion.identity).GetComponent<Enemy>();
             spawned.SetTarget(player);
         }
     }
@@ -119,7 +134,22 @@ public class EnemyManager : MonoBehaviour
     {
         for (int i = 0; i < amount; i++)
         {
-            Enemy spawned = GameObject.Instantiate(zerg, new Vector3(-1.0f, 1.0f, -1.0f), Quaternion.identity).GetComponent<Enemy>();
+            Enemy spawned = GameObject.Instantiate(zerg, new Vector3(150.0f, 1.0f, 100.0f), Quaternion.identity).GetComponent<Enemy>();
+            spawned.SetTarget(currentPylonTarget.transform);
+        }
+        for (int i = 0; i < amount; i++)
+        {
+            Enemy spawned = GameObject.Instantiate(zerg, new Vector3(-170.0f, 1.0f, 100.0f), Quaternion.identity).GetComponent<Enemy>();
+            spawned.SetTarget(currentPylonTarget.transform);
+        }
+        for (int i = 0; i < amount; i++)
+        {
+            Enemy spawned = GameObject.Instantiate(zerg, new Vector3(150.0f, 1.0f, -160.0f), Quaternion.identity).GetComponent<Enemy>();
+            spawned.SetTarget(currentPylonTarget.transform);
+        }
+        for (int i = 0; i < amount; i++)
+        {
+            Enemy spawned = GameObject.Instantiate(zerg, new Vector3(-170.0f, 1.0f, -160.0f), Quaternion.identity).GetComponent<Enemy>();
             spawned.SetTarget(currentPylonTarget.transform);
         }
     }

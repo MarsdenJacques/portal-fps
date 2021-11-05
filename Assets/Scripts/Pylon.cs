@@ -58,6 +58,9 @@ public class Pylon : MonoBehaviour
         {
             GameManager.manager.getGameplayUI().UpdatePylon2(hp);
         }
-        GameManager.manager.Lose();
+        if (hp <= 0)
+        {
+            GameManager.manager.Lose();
+        }
     }
 }
