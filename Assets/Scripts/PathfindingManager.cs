@@ -21,6 +21,7 @@ public class PathfindingManager : MonoBehaviour
             GameObject.Destroy(gameObject);
         }
     }
+    //pathfinding registers itself with the manager here
     public void ReceivePathfinding(Pathfinding pathfindingCandidate)
     {
         if(pathfindingCandidate != null)
@@ -28,6 +29,7 @@ public class PathfindingManager : MonoBehaviour
             pathfinding = pathfindingCandidate;
         }
     }
+    //entities can call this function to queue up a request a path between two points, callback function params (Vector3[], bool)
     public void RequestPath(Vector3 start, Vector3 goal, Action<Vector3[], bool> callbackFunction)
     {
         requests.Enqueue(new Request(start, goal, callbackFunction));
@@ -45,6 +47,7 @@ public class PathfindingManager : MonoBehaviour
             }
         }
     }
+    //send the result back to the waiting entity
     public void GiveResult(Vector3[] path, bool success)
     {
         requests.Dequeue().callbackFunction(path, success);

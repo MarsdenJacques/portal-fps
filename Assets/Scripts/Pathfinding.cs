@@ -27,6 +27,7 @@ public class Pathfinding : MonoBehaviour
     {
         StopAllCoroutines();
     }
+    //Pretty standard A* implementation
     IEnumerator MakePath(Vector3 startPos, Vector3 endPos)
     {
         Node start = grid.GetNodeFromPosition(startPos);
