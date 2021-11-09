@@ -50,7 +50,12 @@ public class Enemy : MonoBehaviour
             if(reachedPylon && gameObject.activeSelf)
             {
                 HitPylon(target.gameObject.GetComponent<Pylon>());
+                return;
             }
+        }
+        if(type == EnemyType.Hunter)
+        {
+            //if target in current parent quadrant set endpoint to target (use variable for endpoint), else set to random place for "patrolling"
         }
         if (!madePathRequest)
         {
@@ -89,7 +94,10 @@ public class Enemy : MonoBehaviour
         }
         else
         {
-            MakePathRequest();
+            if(gameObject.activeSelf)
+            {
+                MakePathRequest();
+            }
         }
     }
     IEnumerator Move()

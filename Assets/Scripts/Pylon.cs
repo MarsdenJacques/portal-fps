@@ -11,7 +11,7 @@ public class Pylon : MonoBehaviour
     private Collider[] collisionResults = new Collider[40];
     private void Awake()
     {
-        GameManager.manager.enemyManager.pylons.Add(this);
+
     }
     private void Update()
     {

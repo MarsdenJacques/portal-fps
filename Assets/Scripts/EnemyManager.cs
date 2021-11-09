@@ -6,8 +6,7 @@ public class EnemyManager : MonoBehaviour
 {
     public GameObject zerg;
     public GameObject hunter;
-    public List<Pylon> pylons = new List<Pylon>();
-    public Pylon currentPylonTarget;
+    public List<Quadrant> quadrants = new List<Quadrant>();
     public float zergDamage = 10.0f;
     public float hunterDamage = 10.0f;
     public float zergSpeed = 0.01f;
@@ -22,7 +21,6 @@ public class EnemyManager : MonoBehaviour
     private int hunterScore;
     private int waveScore;
     private GameplayUIManager gameplayUI = null;
-    private Transform player;
     void Start()
     {
         waveScore = GameManager.manager.waveScore;
@@ -44,26 +42,24 @@ public class EnemyManager : MonoBehaviour
         wave = 1;
         score = 0;
         UpdateScore(0);
-        player = GameManager.manager.player.transform;
         gameplayUI = GameManager.manager.getGameplayUI();
-        currentPylonTarget = pylons[0];
+        foreach(Quadrant quadrant in quadrants)
+        {
+            quadrant.WakeUp(gameplayUI);
+        }
         SpawnWave();
     }
     public void SpawnWave()
     {
         gameplayUI.UpdateWave(wave);
         float pylonHP = CalcPylonHp();
-        foreach (Pylon pylon in pylons)
-        {
-            pylon.hp = pylonHP;
-        }
-        gameplayUI.UpdatePylon1(pylonHP);
-        gameplayUI.UpdatePylon2(pylonHP);
         hunterCount = CalcHunterCount();
-        SpawnHunters(hunterCount);
         zergCount = CalcZergCount();
-        SpawnZerg(zergCount);
-        gameplayUI.UpdateEnemies(zergCount + hunterCount);
+        foreach(Quadrant quadrant in quadrants)
+        {
+            quadrant.SpawnWave(hunterCount, zergCount, pylonHP, hunter, zerg);
+        }
+        gameplayUI.UpdateEnemies(zergCount*quadrants.Count + hunterCount*quadrants.Count);
     }
     private void UpdateScore(int toAdd)
     {
@@ -89,7 +85,12 @@ public class EnemyManager : MonoBehaviour
     {
         wave++;
         gameplayUI.UpdateWave(wave);
-        UpdateScore(waveScore + Mathf.FloorToInt(currentPylonTarget.hp / 10));
+        int pylonScore = 0;
+        foreach(Quadrant quadrant in quadrants)
+        {
+            pylonScore += Mathf.FloorToInt(quadrant.pylon.hp / 10);
+        }
+        UpdateScore(waveScore + pylonScore);
         StartCoroutine(NewWaveTimer());
     }
     private IEnumerator NewWaveTimer()
@@ -107,56 +108,9 @@ public class EnemyManager : MonoBehaviour
             WaveOver();
         }
     }
-    private void SpawnHunters(int amount)
-    {
-        for(int i = 0; i < amount; i++)
-        {
-            Enemy spawned = GameObject.Instantiate(hunter, new Vector3(100.0f, 1.0f, 80.0f), Quaternion.identity).GetComponent<Enemy>();
-            spawned.SetTarget(player);
-        }
-        for (int i = 0; i < amount; i++)
-        {
-            Enemy spawned = GameObject.Instantiate(hunter, new Vector3(-120.0f, 1.0f, 80.0f), Quaternion.identity).GetComponent<Enemy>();
-            spawned.SetTarget(player);
-        }
-        for (int i = 0; i < amount; i++)
-        {
-            Enemy spawned = GameObject.Instantiate(hunter, new Vector3(100.0f, 1.0f, -100.0f), Quaternion.identity).GetComponent<Enemy>();
-            spawned.SetTarget(player);
-        }
-        for (int i = 0; i < amount; i++)
-        {
-            Enemy spawned = GameObject.Instantiate(hunter, new Vector3(-120.0f, 1.0f, -100.0f), Quaternion.identity).GetComponent<Enemy>();
-            spawned.SetTarget(player);
-        }
-    }
-    private void SpawnZerg(int amount)
-    {
-        for (int i = 0; i < amount; i++)
-        {
-            Enemy spawned = GameObject.Instantiate(zerg, new Vector3(150.0f, 1.0f, 100.0f), Quaternion.identity).GetComponent<Enemy>();
-            spawned.SetTarget(currentPylonTarget.transform);
-        }
-        for (int i = 0; i < amount; i++)
-        {
-            Enemy spawned = GameObject.Instantiate(zerg, new Vector3(-170.0f, 1.0f, 100.0f), Quaternion.identity).GetComponent<Enemy>();
-            spawned.SetTarget(currentPylonTarget.transform);
-        }
-        for (int i = 0; i < amount; i++)
-        {
-            Enemy spawned = GameObject.Instantiate(zerg, new Vector3(150.0f, 1.0f, -160.0f), Quaternion.identity).GetComponent<Enemy>();
-            spawned.SetTarget(currentPylonTarget.transform);
-        }
-        for (int i = 0; i < amount; i++)
-        {
-            Enemy spawned = GameObject.Instantiate(zerg, new Vector3(-170.0f, 1.0f, -160.0f), Quaternion.identity).GetComponent<Enemy>();
-            spawned.SetTarget(currentPylonTarget.transform);
-        }
-    }
     public void Restart()
     {
         StopAllCoroutines();
-        pylons = new List<Pylon>();
     }
     private int CalcZergCount()
     {
