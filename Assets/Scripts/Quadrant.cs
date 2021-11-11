@@ -47,7 +47,7 @@ public class Quadrant : MonoBehaviour
     {
         for (int i = 0; i < amount; i++)
         {
-            Enemy spawned = GameObject.Instantiate(hunter, new Vector3(100.0f, 1.0f, 80.0f), Quaternion.identity).GetComponent<Enemy>(); //use spawnpoints
+            Enemy spawned = GameObject.Instantiate(hunter, new Vector3(spawnPoints[0].position.x, spawnPoints[0].position.y, spawnPoints[0].position.z), Quaternion.identity).GetComponent<Enemy>(); //use spawnpoints
             spawned.SetTarget(player);
         }
     }
@@ -55,7 +55,7 @@ public class Quadrant : MonoBehaviour
     {
         for (int i = 0; i < amount; i++)
         {
-            Enemy spawned = GameObject.Instantiate(zerg, new Vector3(150.0f, 1.0f, 100.0f), Quaternion.identity).GetComponent<Enemy>();
+            Enemy spawned = GameObject.Instantiate(zerg, new Vector3(spawnPoints[1].position.x, spawnPoints[1].position.y, spawnPoints[1].position.z), Quaternion.identity).GetComponent<Enemy>();
             spawned.SetTarget(pylon.transform);
         }
     }
