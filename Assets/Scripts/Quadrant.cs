@@ -10,11 +10,15 @@ public class Quadrant : MonoBehaviour
     public List<Transform> spawnPoints;
     private GameplayUIManager gameplayUI = null;
     private Transform player;
-
+    void Awake()
+    {
+        GameManager.manager.enemyManager.RegisterQuadrant(this);
+    }
     public void WakeUp(GameplayUIManager gameUI)
     {
         player = GameManager.manager.player.transform;
         gameplayUI = gameUI;
+        Debug.Log("woke up");
     }
 
     //coroutine for checking if player entered

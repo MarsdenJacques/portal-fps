@@ -6,7 +6,7 @@ public class EnemyManager : MonoBehaviour
 {
     public GameObject zerg;
     public GameObject hunter;
-    public List<Quadrant> quadrants = new List<Quadrant>();
+    private List<Quadrant> quadrants = new List<Quadrant>();
     public float zergDamage = 10.0f;
     public float hunterDamage = 10.0f;
     public float zergSpeed = 0.01f;
@@ -48,6 +48,13 @@ public class EnemyManager : MonoBehaviour
             quadrant.WakeUp(gameplayUI);
         }
         SpawnWave();
+    }
+    public void RegisterQuadrant(Quadrant quadrant)
+    {
+        if(!quadrants.Contains(quadrant))
+        {
+            quadrants.Add(quadrant);
+        }
     }
     public void SpawnWave()
     {
@@ -110,6 +117,7 @@ public class EnemyManager : MonoBehaviour
     }
     public void Restart()
     {
+        quadrants.Clear();
         StopAllCoroutines();
     }
     private int CalcZergCount()
