@@ -118,6 +118,10 @@ public class EnemyManager : MonoBehaviour
     public void Restart()
     {
         quadrants.Clear();
+        foreach(Quadrant quadrant in quadrants)
+        {
+            quadrant.Restart();
+        }
         StopAllCoroutines();
     }
     private int CalcZergCount()

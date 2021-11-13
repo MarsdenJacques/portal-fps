@@ -18,7 +18,6 @@ public class Quadrant : MonoBehaviour
     {
         player = GameManager.manager.player.transform;
         gameplayUI = gameUI;
-        Debug.Log("woke up");
     }
 
     //coroutine for checking if player entered
@@ -28,7 +27,6 @@ public class Quadrant : MonoBehaviour
         if(player != null)
         {
             currentQuad = true;
-            Debug.Log("entered quad" + val);
         }    
     }
     private void OnTriggerExit(Collider other)
@@ -44,23 +42,20 @@ public class Quadrant : MonoBehaviour
     public void SpawnWave(int hunters, int zergs, float pylonHP, GameObject hunter, GameObject zerg)
     {
         gameplayUI.UpdatePylon1(pylonHP); //have to change to List or something
-        SpawnHunters(hunters, hunter);
-        SpawnZerg(zergs, zerg);
+        StartCoroutine(EnemySpawner(0.5f, hunters, hunter, spawnPoints[0], player));
+        StartCoroutine(EnemySpawner(0.5f, zergs, zerg, spawnPoints[1], pylon.transform));
     }
-    private void SpawnHunters(int amount, GameObject hunter)
+    IEnumerator EnemySpawner(float waitTime, int count, GameObject entity, Transform location, Transform target)
     {
-        for (int i = 0; i < amount; i++)
+        for(int spawned = 0; spawned < count; spawned++)
         {
-            Enemy spawned = GameObject.Instantiate(hunter, new Vector3(spawnPoints[0].position.x, spawnPoints[0].position.y, spawnPoints[0].position.z), Quaternion.identity).GetComponent<Enemy>(); //use spawnpoints
-            spawned.SetTarget(player);
+            Enemy enemy = GameObject.Instantiate(entity, new Vector3(location.position.x, location.position.y, location.position.z), Quaternion.identity).GetComponent<Enemy>(); //use spawnpoints
+            enemy.SetTarget(target);
+            yield return new WaitForSeconds(waitTime);
         }
     }
-    private void SpawnZerg(int amount, GameObject zerg)
+    public void Restart()
     {
-        for (int i = 0; i < amount; i++)
-        {
-            Enemy spawned = GameObject.Instantiate(zerg, new Vector3(spawnPoints[1].position.x, spawnPoints[1].position.y, spawnPoints[1].position.z), Quaternion.identity).GetComponent<Enemy>();
-            spawned.SetTarget(pylon.transform);
-        }
+        StopAllCoroutines();
     }
 }

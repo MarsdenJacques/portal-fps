@@ -6,10 +6,11 @@ public class Gun : MonoBehaviour
 {
     public float damage = 10f;
     public Camera cam;
-    public bool isActive = false;
     public int ammoCount = 30;
 
-    float activeTimer = -1.0f;
+    public float FireTiming = 0.2f;
+
+    private float WeaponDowntime = 0.0f;
 
     public GameObject portalPrefab;
 
@@ -30,18 +31,27 @@ public class Gun : MonoBehaviour
     {
         if(GameManager.manager.IsNotPaused())
         {
+            if (WeaponDowntime == 0.0f)
+            {
+                if (Input.GetButton("Fire1")) //switch to getbutton and a timer later for autofire
+                {
+                    WeaponDowntime = FireTiming;
+                    Fire1();
+                }
+                else if (Input.GetButton("Fire2")) //switch to getbutton and a timer later for autofire
+                {
+                    WeaponDowntime = FireTiming;
+                    Fire2();
+                }
+            }
+            else
+            {
+                WeaponDowntime = Mathf.Max(WeaponDowntime - Time.deltaTime, 0.0f);
+            }
             if (Input.GetButtonDown("Fire3"))
             {
                 NextFireMode();
                 Debug.Log(mode);
-            }
-            if (Input.GetButton("Fire1")) //switch to getbutton and a timer later for autofire
-            {
-                Fire1();
-            }
-            else if (Input.GetButton("Fire2")) //switch to getbutton and a timer later for autofire
-            {
-                Fire2();
             }
             if (Input.GetButtonDown("Reload"))
             {
@@ -53,14 +63,6 @@ public class Gun : MonoBehaviour
         {
             GameManager.manager.PauseButton();
         }
-        //if(isActive)
-        //{
-        //    activeTimer -= Time.deltaTime;
-        //    if(activeTimer <= 0.0f)
-        //    {
-        //        isActive = false;
-        //    }
-        //}
     }
     void Fire1()
     {
@@ -222,11 +224,6 @@ public class Gun : MonoBehaviour
         rightPortal.GetComponent<Portal>().partner = leftPortal.GetComponent<Portal>();
         leftPortal.SetActive(true);
         rightPortal.SetActive(true);
-    }
-    public void SetActive(float activeTime)
-    {
-        activeTimer = activeTime;
-        isActive = true;
     }
 }
 
