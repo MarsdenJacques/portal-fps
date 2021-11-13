@@ -13,7 +13,7 @@ public class EnemyManager : MonoBehaviour
     public float hunterSpeed = 0.05f;
     public int wave = 1;
     public GameplayUIManager ui;
-    public float newWaveTimer = 10.0f;
+    public float newWaveTimer = 1.0f;
     private int score = 0;
     private int zergCount;
     private int hunterCount;
@@ -66,7 +66,9 @@ public class EnemyManager : MonoBehaviour
         {
             quadrant.SpawnWave(hunterCount, zergCount, pylonHP, hunter, zerg);
         }
-        gameplayUI.UpdateEnemies(zergCount*quadrants.Count + hunterCount*quadrants.Count);
+        zergCount *= quadrants.Count;
+        hunterCount *= quadrants.Count;
+        gameplayUI.UpdateEnemies(zergCount + hunterCount);
     }
     private void UpdateScore(int toAdd)
     {
@@ -126,11 +128,11 @@ public class EnemyManager : MonoBehaviour
     }
     private int CalcZergCount()
     {
-        return 20 + wave * 2;
+        return 5 + wave * (wave/5);
     }
     private int CalcHunterCount()
     {
-        return 2 + wave;
+        return 1 + wave;
     }
     private float CalcPylonHp()
     {
