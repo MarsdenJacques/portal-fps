@@ -36,9 +36,9 @@ public class GameManager : MonoBehaviour
         else
         {
             manager = this;
-            seed = 1; //get seed
-            Random.InitState(seed);
-            Debug.Log(Random.value);
+            //seed = 1; //get seed
+            //Random.InitState(seed);
+            //Debug.Log(Random.value);
         }
         InitSettings();
         DontDestroyOnLoad(gameObject);
@@ -102,7 +102,10 @@ public class GameManager : MonoBehaviour
     public void Lose()
     {
         gameOver = true;
+        restartGame.Invoke();
         Pause();
+        pathManager.EndPathfinding();
+        StopAllCoroutines();
         gameUI.ToggleGameOverUI();
     }
     public void PauseButton()
@@ -140,9 +143,8 @@ public class GameManager : MonoBehaviour
     public void Restart()
     {
         gameOver = false;
-        pathManager.EndPathfinding();
         enemyManager.Restart();
-        restartGame.Invoke();
+        UnPause();
         OnGameplayStart();
     }
     public bool IsInGameplay()
@@ -157,8 +159,7 @@ public class GameManager : MonoBehaviour
             Time.timeScale = 1.0f;
             StopAllCoroutines();
             pathManager.EndPathfinding();
-            enemyManager.Restart();
-            Time.timeScale = 1.0f;
+            enemyManager.ReturnToMenu();
             paused = false;
         }
     }

@@ -74,7 +74,6 @@ public class EnemyManager : MonoBehaviour
     {
         score += toAdd;
         GameManager.manager.UpdateScore(score);
-        Debug.Log(score);
         if(PlayerPrefs.GetInt("highscore", 0) < score)
         {
             PlayerPrefs.SetInt("highscore", score);
@@ -117,9 +116,13 @@ public class EnemyManager : MonoBehaviour
             WaveOver();
         }
     }
+    public void ReturnToMenu()
+    {
+        Restart();
+        quadrants.Clear();
+    }
     public void Restart()
     {
-        quadrants.Clear();
         foreach(Quadrant quadrant in quadrants)
         {
             quadrant.Restart();

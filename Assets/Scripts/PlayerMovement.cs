@@ -99,13 +99,11 @@ public class PlayerMovement : MonoBehaviour
             Damageable enemy = collisionResults[collision].gameObject.GetComponent<Damageable>();
             if (enemy != null)
             {
-                Debug.Log("test2");
                 enemy.parent.HitPlayer(player);
             }
             Portal portal = collisionResults[collision].gameObject.GetComponent<Portal>();
             if (portal != null)
             {
-                Debug.Log("test3");
                 portal.Teleport(player.gameObject);
             }
         }

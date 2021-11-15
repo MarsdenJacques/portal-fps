@@ -56,6 +56,7 @@ public class PathfindingManager : MonoBehaviour
     }
     public void EndPathfinding()
     {
+        processingRequest = false;
         pathfinding.EndPathfinding();
         requests = new Queue<Request>();
     }

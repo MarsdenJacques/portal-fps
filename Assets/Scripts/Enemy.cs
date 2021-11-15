@@ -86,7 +86,7 @@ public class Enemy : MonoBehaviour
     private void ReceivedPath(Vector3[] path, bool success)
     {
         madePathRequest = false;
-        if(success && gameObject.activeSelf)
+        if (success && gameObject.activeSelf)
         {
             currentPath = path;
             StopCoroutine("Move");
