@@ -7,6 +7,7 @@ public class Player : MonoBehaviour
     public float health = 100f;
     public Gun gun;
     public MouseLook mouse;
+    private Vector3 startPos = new Vector3();
 
     // Start is called before the first frame update
     void Awake()
@@ -14,6 +15,9 @@ public class Player : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked;
         GameManager.manager.player = this;
         GameManager.manager.restartGame.AddListener(Restart);
+        startPos.x = transform.position.x;
+        startPos.y = transform.position.y;
+        startPos.z = transform.position.z;
     }
     public void TakeDamage(float amount)
     {
@@ -24,6 +28,14 @@ public class Player : MonoBehaviour
         {
             Die();
         }
+    }
+    //have to disable character controller temporarily to hard-reset the position of the player back to the starting point
+    public void OnGameplayStart()
+    {
+        CharacterController controller = gameObject.GetComponent<CharacterController>();
+        controller.enabled = false;
+        gameObject.transform.position = new Vector3(startPos.x, startPos.y, startPos.z);
+        controller.enabled = true;
     }
     public void Teleported()
     {

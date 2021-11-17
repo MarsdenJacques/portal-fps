@@ -7,7 +7,7 @@ public class Pylon : MonoBehaviour
     public bool active = false;
     public float hp = 100.0f;
     public LayerMask scanForMask;
-    public bool pylon1;
+    public int pylonID;
     private Collider[] collisionResults = new Collider[40];
     private void Awake()
     {
@@ -50,14 +50,7 @@ public class Pylon : MonoBehaviour
     public void TakeDamage(float damage)
     {
         hp -= damage;
-        if(pylon1)
-        {
-            GameManager.manager.getGameplayUI().UpdatePylon1(hp);
-        }
-        else
-        {
-            GameManager.manager.getGameplayUI().UpdatePylon2(hp);
-        }
+        GameManager.manager.getGameplayUI().UpdatePylon(hp, pylonID);
         if (hp <= 0)
         {
             GameManager.manager.Lose();

@@ -5,7 +5,7 @@ using UnityEngine;
 public class Quadrant : MonoBehaviour
 {
     public bool currentQuad = false;
-    public int val;
+    public int QuadrantID;
     public Pylon pylon;
     public List<Transform> spawnPoints;
     private GameplayUIManager gameplayUI = null;
@@ -35,13 +35,13 @@ public class Quadrant : MonoBehaviour
         if (player != null)
         {
             currentQuad = false;
-            Debug.Log("left quad" + val);
+            Debug.Log("left quad" + QuadrantID);
         }
     }
 
     public void SpawnWave(int hunters, int zergs, float pylonHP, GameObject hunter, GameObject zerg)
     {
-        gameplayUI.UpdatePylon1(pylonHP); //have to change to List or something
+        gameplayUI.UpdatePylon(pylonHP, QuadrantID); //have to change to List or something
         StartCoroutine(EnemySpawner(0.5f, hunters, hunter, spawnPoints[0], player));
         StartCoroutine(EnemySpawner(0.5f, zergs, zerg, spawnPoints[1], pylon.transform));
     }

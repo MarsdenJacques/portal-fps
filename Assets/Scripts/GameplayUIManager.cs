@@ -17,6 +17,10 @@ public class GameplayUIManager : MonoBehaviour
     [SerializeField]
     private TMP_Text pylon2Text = null;
     [SerializeField]
+    private TMP_Text pylon3Text = null;
+    [SerializeField]
+    private TMP_Text pylon4Text = null;
+    [SerializeField]
     private TMP_Text ammoText = null;
     [SerializeField]
     private Slider healthSlider = null;
@@ -41,13 +45,42 @@ public class GameplayUIManager : MonoBehaviour
     {
         ammoText.SetText(""+newVal);
     }
-    public void UpdatePylon1(float newVal)
+    public void UpdatePylon(float newVal, int pylonId)
+    {
+        switch (pylonId)
+        {
+            case 1:
+                UpdatePylon1(newVal);
+                break;
+            case 2:
+                UpdatePylon2(newVal);
+                break;
+            case 3:
+                UpdatePylon3(newVal);
+                break;
+            case 4:
+                UpdatePylon4(newVal);
+                break;
+            default:
+                Debug.Log("Invalid pylon ID");
+                break;
+        }
+    }
+    private void UpdatePylon1(float newVal)
     {
         pylon1Text.SetText("Pylon 1 HP: " + newVal);
     }
-    public void UpdatePylon2(float newVal)
+    private void UpdatePylon2(float newVal)
     {
         pylon2Text.SetText("Pylon 2 HP: " + newVal);
+    }
+    private void UpdatePylon3(float newVal)
+    {
+        pylon3Text.SetText("Pylon 3 HP: " + newVal);
+    }
+    private void UpdatePylon4(float newVal)
+    {
+        pylon4Text.SetText("Pylon 4 HP: " + newVal);
     }
     public void UpdateEnemies(int newVal)
     {

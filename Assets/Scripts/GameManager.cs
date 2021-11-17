@@ -67,7 +67,7 @@ public class GameManager : MonoBehaviour
     public void OnGameplayStart()
     {
         inGameplay = true;
-        player.gameObject.transform.position = new Vector3(11.7f, 0.98f, -61.1f);
+        player.OnGameplayStart();
         StopCoroutine(PathfindingTimer());
         StartCoroutine(PathfindingTimer());
         enemyManager.WakeUp();
