@@ -45,6 +45,7 @@ public class PlayerMovement : MonoBehaviour
     {
         if(GameManager.manager.IsNotPaused())
         {
+            Debug.Log(velocity.y);
             Movement();
             Collision();
         }
