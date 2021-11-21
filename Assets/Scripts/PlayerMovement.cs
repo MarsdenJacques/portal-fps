@@ -16,7 +16,7 @@ public class PlayerMovement : MonoBehaviour
     public Transform groundCheck;
     public float groundCheckDistance = 0.4f;
     public LayerMask groundLayer;
-    Vector3 velocity;
+    private Vector3 velocity;
     bool isGrounded;
 
     public float enemyCheckDistance = 0.6f;
@@ -45,7 +45,6 @@ public class PlayerMovement : MonoBehaviour
     {
         if(GameManager.manager.IsNotPaused())
         {
-            Debug.Log(velocity.y);
             Movement();
             Collision();
         }
@@ -82,6 +81,8 @@ public class PlayerMovement : MonoBehaviour
         Vector3 movement = transform.right * xMove + transform.forward * zMove;
         controller.Move(movement * moveSpeed * Time.deltaTime);
         velocity.y += gravity * gravityMulti * Time.deltaTime;
+        velocity.x = xMove;
+        velocity.z = zMove;
         controller.Move(velocity * Time.deltaTime);
     }
     private void Collision()
@@ -108,5 +109,9 @@ public class PlayerMovement : MonoBehaviour
                 portal.Teleport(player.gameObject);
             }
         }
+    }
+    public Vector3 getVelocity()
+    {
+        return velocity;
     }
 }

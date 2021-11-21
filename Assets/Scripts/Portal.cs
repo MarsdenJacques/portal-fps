@@ -55,12 +55,6 @@ public class Portal : MonoBehaviour
         // Render camera
 
         cam.Render();
-
-        //bool hitPortable = Physics.CheckCapsule(bottom, top, enemyCheckDistance, enemyLayer);
-        //if (hitEnemy)
-        //{
-        //    Debug.Log("raycast oof");
-        //}
     }
     public Vector3 TranslatePos(Portal reference, Portal receiver, Vector3 position)
     {
@@ -74,6 +68,26 @@ public class Portal : MonoBehaviour
     {
        // Teleport(other.gameObject);
     }
+    private void CalculatePlayerTeleportVelocity(Player player)
+    {
+        Vector3 playerVelocity = player.gameObject.transform.GetChild(0).gameObject.GetComponent<PlayerMovement>().getVelocity();
+        Vector3 translatedVelocity = player.gameObject.transform.TransformVector(playerVelocity);
+        Vector3 translatedForward = back.TransformVector(back.forward);
+        Vector3 translatedUp = back.TransformVector(back.up);
+        Vector3 translatedRight = back.TransformVector(back.right);
+        Debug.Log(translatedVelocity);
+        Debug.Log(translatedUp);
+        Debug.Log(translatedForward);
+        Debug.Log(translatedRight);
+        Vector3 entrySpeedVector = VectorTools.VectorProjection3(translatedVelocity, translatedForward);
+        float entrySpeed = VectorTools.Magnitude3(entrySpeedVector);
+        Debug.Log(entrySpeedVector);
+        Debug.Log(entrySpeed);
+        Vector3 entryDirectionVector = translatedVelocity - entrySpeedVector;
+        Debug.Log(entryDirectionVector);
+        Vector3 resultDirection = partner.dropOff.forward * entrySpeed + entryDirectionVector;
+        //apply as force to player
+    }
     public void Teleport(GameObject port)
     {
         if (!receivingTele)
@@ -81,6 +95,7 @@ public class Portal : MonoBehaviour
             Player player = port.GetComponent<Player>();
             if (player != null)
             {
+                CalculatePlayerTeleportVelocity(player);
                 partner.receivingTele = true;
                 player.transform.SetPositionAndRotation(partner.dropOff.position, partner.dropOff.rotation);
                 Quaternion rotation = player.transform.rotation;
