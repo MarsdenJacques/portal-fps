@@ -55,9 +55,14 @@ public class PlayerMovement : MonoBehaviour
     private void Movement()
     {
         isGrounded = Physics.CheckSphere(groundCheck.position, groundCheckDistance, groundLayer);
-        if (isGrounded && velocity.y < 0f)
+        if (isGrounded)
         {
-            velocity.y = -2f;
+            if(velocity.y < 0f)
+            {
+                velocity.y = -2f;
+            }
+            velocity.x -= 0;//change to friction coeficient
+            velocity.z -= 0;
         }
         if (isGrounded && Input.GetButtonDown("Jump"))
         {
@@ -67,21 +72,21 @@ public class PlayerMovement : MonoBehaviour
         zMove = 0.0f;
         if (Input.GetKey((KeyCode)PlayerPrefs.GetInt("left"))) //maybe inefficient, save and refresh values?
         {
-            xMove -= 1.0f;
+            xMove -= 1.0f * moveSpeed;
         }
         if (Input.GetKey((KeyCode)PlayerPrefs.GetInt("right"))) //maybe inefficient, save and refresh values?
         {
-            xMove += 1.0f;
+            xMove += 1.0f * moveSpeed;
         }
         if (Input.GetKey((KeyCode)PlayerPrefs.GetInt("forward"))) //maybe inefficient, save and refresh values?
         {
-            zMove += 1.0f;
+            zMove += 1.0f * moveSpeed;
         }
         if (Input.GetKey((KeyCode)PlayerPrefs.GetInt("backward"))) //maybe inefficient, save and refresh values?
         {
-            zMove -= 1.0f;
+            zMove -= 1.0f * moveSpeed;
         }
-        Vector3 movement = transform.right * (velocity.x + xMove) * moveSpeed + transform.up * velocity.y + transform.forward * (velocity.z + zMove) * moveSpeed;
+        Vector3 movement = transform.right * (velocity.x + xMove) + transform.up * velocity.y + transform.forward * (velocity.z + zMove);
         controller.Move(movement  * Time.deltaTime);
         velocity.y += gravity * gravityMulti * Time.deltaTime;
         if (velocity.x > 0)
@@ -122,6 +127,7 @@ public class PlayerMovement : MonoBehaviour
             Portal portal = collisionResults[collision].gameObject.GetComponent<Portal>();
             if (portal != null)
             {
+                //change to only work when "submerged" in the portal
                 portal.Teleport(player.gameObject);
             }
         }
@@ -129,12 +135,8 @@ public class PlayerMovement : MonoBehaviour
     private Vector3 convertWorldForceToLocalVelocity(Vector3 force)
     {
         Vector3 result = new Vector3(0,0,0);
-        Debug.Log(transform.forward);
-        Debug.Log(force);
         result.x = VectorTools.Magnitude3(VectorTools.VectorProjection3(force, transform.TransformVector(transform.right)));
-        Debug.Log(result);
         result.y = VectorTools.Magnitude3(VectorTools.VectorProjection3(force, transform.TransformVector(transform.up)));
-        Debug.Log(result);
         result.z = VectorTools.Magnitude3(VectorTools.VectorProjection3(force, transform.TransformVector(transform.forward)));
         Debug.Log(result);
         return result;
@@ -142,7 +144,9 @@ public class PlayerMovement : MonoBehaviour
     public void ApplyForce(Vector3 force)
     {
         force = convertWorldForceToLocalVelocity(force);
-        velocity += force;
+        velocity = force;
+        Debug.Log(force);
+        Debug.Log(velocity);
     }
     public Vector3 getCurrentVelocity()
     {

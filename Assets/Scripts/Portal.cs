@@ -71,7 +71,7 @@ public class Portal : MonoBehaviour
     private Vector3 CalculatePlayerTeleportVelocity(Player player, PlayerMovement movement)
     {
         //all this was pointless, jsut need to invert gravity if necessary   
-        Vector3 playerVelocity = movement.getCurrentVelocity();
+        /*Vector3 playerVelocity = movement.getCurrentVelocity();
         Vector3 translatedVelocity = player.gameObject.transform.TransformVector(playerVelocity);
         Vector3 translatedForward = back.TransformVector(back.forward);
         Vector3 translatedUp = back.TransformVector(back.up);
@@ -107,13 +107,23 @@ public class Portal : MonoBehaviour
         Debug.Log(force);
         Debug.Log(player.gameObject.transform.InverseTransformVector(force));
         Debug.Log(player.gameObject.transform.TransformPoint(player.gameObject.transform.position));
-        Debug.Log(player.gameObject.transform.position);
+        Debug.Log(player.gameObject.transform.position);*/
+        Vector3 playerVelocity = movement.getCurrentVelocity();
+        Vector3 translatedVelocity = player.gameObject.transform.TransformVector(playerVelocity);
+        Debug.Log(translatedVelocity);
+        Vector3 entrySpeedVector = VectorTools.VectorProjection3(translatedVelocity, back.forward);
+        Debug.Log(entrySpeedVector);
+        float entrySpeed = VectorTools.Magnitude3(entrySpeedVector);
+        Vector3 force = VectorTools.UnitVector3(partner.front.forward) * entrySpeed;
+        Debug.Log(partner.front.forward);
+        Debug.Log(entrySpeed);
+        Debug.Log(force);
         return force;
     }
     public void Teleport(GameObject port)
     {
-        if (!receivingTele)//fix this by only teleporting when full object inside portal, until then just occlude
-        {
+        //if (!receivingTele)//fix this by only teleporting when full object inside portal, until then just occlude
+        //{
             Player player = port.GetComponent<Player>();
             if (player != null)
             {
@@ -133,11 +143,11 @@ public class Portal : MonoBehaviour
             {
                 Debug.Log("How did you get this function " + port.name +"?");
             }
-        }
-        else
-        {
-             Debug.Log("just tpd");
-        }
+        //}
+        //else
+        //{
+             //Debug.Log("just tpd");
+        //}
     }
     private void OnTriggerExit(Collider other) //change to timer coroutine (or just make the check for teleportation much smaller on the player and dump them outside the teleportation zone?
         //doesn't work for stuff on the ground, also have to maintain momentum
