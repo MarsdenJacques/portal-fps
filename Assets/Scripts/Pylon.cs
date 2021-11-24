@@ -30,7 +30,6 @@ public class Pylon : MonoBehaviour
         int collisions = Physics.OverlapCapsuleNonAlloc(bottom, top, .05f, collisionResults, scanForMask);
         for (int collision = 0; collision < collisions; collision++)
         {
-            Debug.Log("??");
             Damageable enemy = collisionResults[collision].GetComponent<Damageable>();
             if(enemy.parent.target.gameObject == gameObject)
             {

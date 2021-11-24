@@ -68,9 +68,10 @@ public class Portal : MonoBehaviour
     {
        // Teleport(other.gameObject);
     }
-    private void CalculatePlayerTeleportVelocity(Player player)
+    private Vector3 CalculatePlayerTeleportVelocity(Player player, PlayerMovement movement)
     {
-        Vector3 playerVelocity = player.gameObject.transform.GetChild(0).gameObject.GetComponent<PlayerMovement>().getVelocity();
+        //all this was pointless, jsut need to invert gravity if necessary   
+        Vector3 playerVelocity = movement.getCurrentVelocity();
         Vector3 translatedVelocity = player.gameObject.transform.TransformVector(playerVelocity);
         Vector3 translatedForward = back.TransformVector(back.forward);
         Vector3 translatedUp = back.TransformVector(back.up);
@@ -83,25 +84,49 @@ public class Portal : MonoBehaviour
         float entrySpeed = VectorTools.Magnitude3(entrySpeedVector);
         Debug.Log(entrySpeedVector);
         Debug.Log(entrySpeed);
-        Vector3 entryDirectionVector = translatedVelocity - entrySpeedVector;
-        Debug.Log(entryDirectionVector);
-        Vector3 resultDirection = partner.dropOff.forward * entrySpeed + entryDirectionVector;
-        //apply as force to player
+        Vector3 entryUpVector = VectorTools.VectorProjection3(translatedVelocity, translatedUp);
+        Debug.Log(entryUpVector);
+        Vector3 entryRightVector = VectorTools.VectorProjection3(translatedVelocity, translatedRight);
+        Debug.Log(entryRightVector);
+        Vector3 translatedPartnerForward = partner.front.TransformVector(partner.front.forward);
+        Debug.Log(translatedPartnerForward);
+        Vector3 translatedPartnerUp = partner.front.TransformVector(partner.front.up);
+        Vector3 translatedPartnerRight = partner.front.TransformVector(partner.front.right);
+        translatedPartnerForward = VectorTools.UnitVector3(translatedPartnerForward);
+        translatedPartnerUp = VectorTools.UnitVector3(translatedPartnerUp);
+        translatedPartnerRight = VectorTools.UnitVector3(translatedPartnerRight);
+        translatedPartnerForward *= VectorTools.Magnitude3(entrySpeedVector);
+        translatedPartnerUp *= VectorTools.Magnitude3(entryUpVector);//this is wrong
+        if(entryUpVector.y < 0.0f) { translatedPartnerUp *= -1; }
+        translatedPartnerRight *= VectorTools.Magnitude3(entryRightVector);
+        if (entryRightVector.x < 0.0f) { translatedPartnerRight *= -1; }
+        Debug.Log(translatedPartnerForward);
+        Debug.Log(translatedPartnerUp);
+        Debug.Log(translatedPartnerRight);
+        Vector3 force = translatedPartnerForward + translatedPartnerUp + translatedPartnerRight;
+        Debug.Log(force);
+        Debug.Log(player.gameObject.transform.InverseTransformVector(force));
+        Debug.Log(player.gameObject.transform.TransformPoint(player.gameObject.transform.position));
+        Debug.Log(player.gameObject.transform.position);
+        return force;
     }
     public void Teleport(GameObject port)
     {
-        if (!receivingTele)
+        if (!receivingTele)//fix this by only teleporting when full object inside portal, until then just occlude
         {
             Player player = port.GetComponent<Player>();
             if (player != null)
             {
-                CalculatePlayerTeleportVelocity(player);
+                PlayerMovement movement = player.gameObject.transform.GetChild(0).gameObject.GetComponent<PlayerMovement>();
+                Vector3 force = CalculatePlayerTeleportVelocity(player, movement);
                 partner.receivingTele = true;
                 player.transform.SetPositionAndRotation(partner.dropOff.position, partner.dropOff.rotation);
                 Quaternion rotation = player.transform.rotation;
                 rotation.x = 0;
                 rotation.z = 0;
                 player.transform.rotation = rotation;
+                //apply force to player
+                movement.ApplyForce(force);
                 player.Teleported();
             }
             else
@@ -111,7 +136,7 @@ public class Portal : MonoBehaviour
         }
         else
         {
-            Debug.Log("just tpd");
+             Debug.Log("just tpd");
         }
     }
     private void OnTriggerExit(Collider other) //change to timer coroutine (or just make the check for teleportation much smaller on the player and dump them outside the teleportation zone?

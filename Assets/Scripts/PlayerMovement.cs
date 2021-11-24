@@ -11,6 +11,7 @@ public class PlayerMovement : MonoBehaviour
     public float moveSpeed = 12f;
     public float jumpHeight = 5.0f;
     public float gravityMulti = 1.0f;
+    public float rateOfVelocityReturn = 0.1f;
 
     float gravity = -9.81f;
     public Transform groundCheck;
@@ -23,6 +24,8 @@ public class PlayerMovement : MonoBehaviour
     public LayerMask[] scanForLayers;
     private int scanForMask;
     private Collider[] collisionResults = new Collider[20];
+    private float xMove = 0.0f;//Input.GetAxis("Horizontal");
+    private float zMove = 0.0f;//Input.GetAxis("Vertical");
 
     private void Start()
     {
@@ -60,8 +63,8 @@ public class PlayerMovement : MonoBehaviour
         {
             velocity.y = Mathf.Sqrt(-2 * jumpHeight * gravity);
         }
-        float xMove = 0.0f;//Input.GetAxis("Horizontal");
-        float zMove = 0.0f;//Input.GetAxis("Vertical");
+        xMove = 0.0f;
+        zMove = 0.0f;
         if (Input.GetKey((KeyCode)PlayerPrefs.GetInt("left"))) //maybe inefficient, save and refresh values?
         {
             xMove -= 1.0f;
@@ -78,12 +81,25 @@ public class PlayerMovement : MonoBehaviour
         {
             zMove -= 1.0f;
         }
-        Vector3 movement = transform.right * xMove + transform.forward * zMove;
-        controller.Move(movement * moveSpeed * Time.deltaTime);
+        Vector3 movement = transform.right * (velocity.x + xMove) * moveSpeed + transform.up * velocity.y + transform.forward * (velocity.z + zMove) * moveSpeed;
+        controller.Move(movement  * Time.deltaTime);
         velocity.y += gravity * gravityMulti * Time.deltaTime;
-        velocity.x = xMove;
-        velocity.z = zMove;
-        controller.Move(velocity * Time.deltaTime);
+        if (velocity.x > 0)
+        {
+            velocity.x = Mathf.Max(velocity.x + -1 * rateOfVelocityReturn,0);
+        }
+        else if(velocity.x < 0)
+        {
+            velocity.x = Mathf.Min(velocity.x + rateOfVelocityReturn, 0);
+        }
+        if (velocity.z > 0)
+        {
+            velocity.z = Mathf.Max(velocity.z + -1 * rateOfVelocityReturn, 0);
+        }
+        else if (velocity.z < 0)
+        {
+            velocity.z = Mathf.Min(velocity.z + rateOfVelocityReturn, 0);
+        }
     }
     private void Collision()
     {
@@ -110,8 +126,27 @@ public class PlayerMovement : MonoBehaviour
             }
         }
     }
-    public Vector3 getVelocity()
+    private Vector3 convertWorldForceToLocalVelocity(Vector3 force)
     {
-        return velocity;
+        Vector3 result = new Vector3(0,0,0);
+        Debug.Log(transform.forward);
+        Debug.Log(force);
+        result.x = VectorTools.Magnitude3(VectorTools.VectorProjection3(force, transform.TransformVector(transform.right)));
+        Debug.Log(result);
+        result.y = VectorTools.Magnitude3(VectorTools.VectorProjection3(force, transform.TransformVector(transform.up)));
+        Debug.Log(result);
+        result.z = VectorTools.Magnitude3(VectorTools.VectorProjection3(force, transform.TransformVector(transform.forward)));
+        Debug.Log(result);
+        return result;
+    }
+    public void ApplyForce(Vector3 force)
+    {
+        force = convertWorldForceToLocalVelocity(force);
+        velocity += force;
+    }
+    public Vector3 getCurrentVelocity()
+    {
+        Vector3 result = new Vector3(velocity.x + xMove, velocity.y, velocity.z + zMove);
+        return result;
     }
 }
