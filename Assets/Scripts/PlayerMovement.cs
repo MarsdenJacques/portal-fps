@@ -11,7 +11,8 @@ public class PlayerMovement : MonoBehaviour
     public float moveSpeed = 12f;
     public float jumpHeight = 5.0f;
     public float gravityMulti = 1.0f;
-    public float rateOfVelocityReturn = 0.1f;
+    public float rateOfVelocityReturn = 10.0f;
+    public float rateOfRotationReturn = 2.0f;
 
     float gravity = -9.81f;
     public Transform groundCheck;
@@ -48,9 +49,33 @@ public class PlayerMovement : MonoBehaviour
     {
         if(GameManager.manager.IsNotPaused())
         {
+            //Alignment();
+            //rotating the player's x and z rotation to match the portal angles felt really jarring
             Movement();
             Collision();
         }
+    }
+    private void Alignment()
+    {
+        //must convert velocity here
+        Quaternion rotation = player.transform.rotation;
+        if(rotation.x > 0)
+        {
+            rotation.x = Mathf.Max(rotation.x - rateOfRotationReturn * Time.deltaTime, 0.0f);
+        }
+        else if(rotation.x < 0)
+        {
+            rotation.x = Mathf.Min(rotation.x + rateOfRotationReturn * Time.deltaTime, 0.0f);
+        }
+        if (rotation.z > 0)
+        {
+            rotation.z = Mathf.Max(rotation.z - rateOfRotationReturn * Time.deltaTime, 0.0f);
+        }
+        else if(rotation.z < 0)
+        {
+            rotation.z = Mathf.Min(rotation.x + rateOfRotationReturn * Time.deltaTime, 0.0f);
+        }
+        player.transform.rotation = rotation;
     }
     private void Movement()
     {
@@ -91,19 +116,19 @@ public class PlayerMovement : MonoBehaviour
         velocity.y += gravity * gravityMulti * Time.deltaTime;
         if (velocity.x > 0)
         {
-            velocity.x = Mathf.Max(velocity.x + -1 * rateOfVelocityReturn,0);
+            velocity.x = Mathf.Max(velocity.x + -1 * rateOfVelocityReturn * Time.deltaTime, 0);
         }
         else if(velocity.x < 0)
         {
-            velocity.x = Mathf.Min(velocity.x + rateOfVelocityReturn, 0);
+            velocity.x = Mathf.Min(velocity.x + rateOfVelocityReturn * Time.deltaTime, 0);
         }
         if (velocity.z > 0)
         {
-            velocity.z = Mathf.Max(velocity.z + -1 * rateOfVelocityReturn, 0);
+            velocity.z = Mathf.Max(velocity.z + -1 * rateOfVelocityReturn * Time.deltaTime, 0);
         }
         else if (velocity.z < 0)
         {
-            velocity.z = Mathf.Min(velocity.z + rateOfVelocityReturn, 0);
+            velocity.z = Mathf.Min(velocity.z + rateOfVelocityReturn * Time.deltaTime, 0);
         }
     }
     private void Collision()
@@ -138,15 +163,12 @@ public class PlayerMovement : MonoBehaviour
         result.x = VectorTools.Magnitude3(VectorTools.VectorProjection3(force, transform.TransformVector(transform.right)));
         result.y = VectorTools.Magnitude3(VectorTools.VectorProjection3(force, transform.TransformVector(transform.up)));
         result.z = VectorTools.Magnitude3(VectorTools.VectorProjection3(force, transform.TransformVector(transform.forward)));
-        Debug.Log(result);
         return result;
     }
     public void ApplyForce(Vector3 force)
     {
         force = convertWorldForceToLocalVelocity(force);
         velocity = force;
-        Debug.Log(force);
-        Debug.Log(velocity);
     }
     public Vector3 getCurrentVelocity()
     {

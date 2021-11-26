@@ -110,15 +110,31 @@ public class Portal : MonoBehaviour
         Debug.Log(player.gameObject.transform.position);*/
         Vector3 playerVelocity = movement.getCurrentVelocity();
         Vector3 translatedVelocity = player.gameObject.transform.TransformVector(playerVelocity);
-        Debug.Log(translatedVelocity);
         Vector3 entrySpeedVector = VectorTools.VectorProjection3(translatedVelocity, back.forward);
-        Debug.Log(entrySpeedVector);
         float entrySpeed = VectorTools.Magnitude3(entrySpeedVector);
         Vector3 force = VectorTools.UnitVector3(partner.front.forward) * entrySpeed;
-        Debug.Log(partner.front.forward);
-        Debug.Log(entrySpeed);
-        Debug.Log(force);
         return force;
+    }
+    private Vector3 CalculatePlayerRotation(Player player)
+    {
+        Vector3 rotation = player.transform.rotation.eulerAngles;
+        //rotating the player's x and z rotation to match the portal angles felt really jarring
+        /*rotation.x += front.rotation.eulerAngles.x;
+        rotation.z += front.rotation.eulerAngles.z;
+        rotation.x += partner.front.rotation.eulerAngles.x;
+        rotation.z += partner.front.rotation.eulerAngles.z;
+        Debug.Log(rotation);
+        if(rotation.x > 180.0f) //can't do this at the end
+        {
+            rotation.x -= 360.0f;
+        }
+        if (rotation.z > 180.0f)
+        {
+            rotation.z -= 360.0f;
+        }*/
+        rotation.y += back.rotation.eulerAngles.y;
+        rotation.y += partner.front.rotation.eulerAngles.y;
+        return rotation;
     }
     public void Teleport(GameObject port)
     {
@@ -130,11 +146,15 @@ public class Portal : MonoBehaviour
                 PlayerMovement movement = player.gameObject.transform.GetChild(0).gameObject.GetComponent<PlayerMovement>();
                 Vector3 force = CalculatePlayerTeleportVelocity(player, movement);
                 partner.receivingTele = true;
-                player.transform.SetPositionAndRotation(partner.dropOff.position, partner.dropOff.rotation);
-                Quaternion rotation = player.transform.rotation;
+            //retain player rotation through teleportation
+            //player.transform.SetPositionAndRotation(partner.dropOff.position, partner.dropOff.rotation);
+                Quaternion rotation = Quaternion.identity;
+                rotation.eulerAngles = CalculatePlayerRotation(player);
+                player.transform.SetPositionAndRotation(partner.dropOff.position, rotation);
+                /*Quaternion rotation = player.transform.rotation;
                 rotation.x = 0;
                 rotation.z = 0;
-                player.transform.rotation = rotation;
+                player.transform.rotation = rotation;*/
                 //apply force to player
                 movement.ApplyForce(force);
                 player.Teleported();
