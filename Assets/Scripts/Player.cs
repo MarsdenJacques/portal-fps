@@ -56,7 +56,7 @@ public class Player : MonoBehaviour
     private void Restart()
     {
         health = 100.0f;
-        gun.ammoCount = 30;
+        gun.Reset();
     }
     private void OnDestroy()
     {

@@ -222,8 +222,16 @@ public class Gun : MonoBehaviour
     {
         leftPortal.GetComponent<Portal>().partner = rightPortal.GetComponent<Portal>();
         rightPortal.GetComponent<Portal>().partner = leftPortal.GetComponent<Portal>();
-        leftPortal.SetActive(true);
+        leftPortal.SetActive(true); 
         rightPortal.SetActive(true);
+    }
+    public void Reset()
+    {
+        ammoCount = 30;
+        GameManager.manager.getGameplayUI().UpdateAmmo(ammoCount);
+        mode = FireModes.Semi;
+        Object.Destroy(leftPortal);
+        Object.Destroy(rightPortal);
     }
 }
 
