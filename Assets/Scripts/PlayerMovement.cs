@@ -111,7 +111,7 @@ public class PlayerMovement : MonoBehaviour
         {
             zMove -= 1.0f * moveSpeed;
         }
-        Vector3 movement = transform.right * (velocity.x + xMove) + transform.up * velocity.y + transform.forward * (velocity.z + zMove);
+        Vector3 movement = transform.right * (xMove) + transform.forward * (zMove) + Vector3.right * velocity.x + Vector3.up * velocity.y + Vector3.forward * velocity.z;
         controller.Move(movement  * Time.deltaTime);
         velocity.y += gravity * gravityMulti * Time.deltaTime;
         if (velocity.x > 0)
@@ -160,9 +160,7 @@ public class PlayerMovement : MonoBehaviour
     private Vector3 convertWorldForceToLocalVelocity(Vector3 force)
     {
         Vector3 result = new Vector3(0,0,0);
-        result.x = VectorTools.Magnitude3(VectorTools.VectorProjection3(force, transform.TransformVector(transform.right)));
-        result.y = VectorTools.Magnitude3(VectorTools.VectorProjection3(force, transform.TransformVector(transform.up)));
-        result.z = VectorTools.Magnitude3(VectorTools.VectorProjection3(force, transform.TransformVector(transform.forward)));
+        result += VectorTools.VectorProjection3(force, transform.TransformVector(transform.right)) + VectorTools.VectorProjection3(force, transform.TransformVector(transform.up)) + VectorTools.VectorProjection3(force, transform.TransformVector(transform.forward));
         return result;
     }
     public void ApplyForce(Vector3 force)

@@ -119,19 +119,22 @@ public class Portal : MonoBehaviour
     {
         Vector3 rotation = player.transform.rotation.eulerAngles;
         //rotating the player's x and z rotation to match the portal angles felt really jarring
-        /*rotation.x += front.rotation.eulerAngles.x;
-        rotation.z += front.rotation.eulerAngles.z;
-        rotation.x += partner.front.rotation.eulerAngles.x;
-        rotation.z += partner.front.rotation.eulerAngles.z;
+        /*Vector3 frontRotation = ClampRotation(front.rotation.eulerAngles);
+        rotation.x += frontRotation.x;
+        rotation.z += frontRotation.z;
+        Vector3 partnerRotation = ClampRotation(partner.front.rotation.eulerAngles);
+        rotation.x += partnerRotation.x;
+        rotation.z += partnerRotation.z;
+        Vector3 backRotation = ClampRotation(back.rotation.eulerAngles);
+        Debug.Log(backRotation);
         Debug.Log(rotation);
-        if(rotation.x > 180.0f) //can't do this at the end
-        {
-            rotation.x -= 360.0f;
-        }
-        if (rotation.z > 180.0f)
-        {
-            rotation.z -= 360.0f;
-        }*/
+        rotation.y += backRotation.y;
+        Debug.Log(rotation);
+        Debug.Log(partnerRotation);
+        rotation.y = ClampDegrees(rotation.y);
+        rotation.y += partnerRotation.y;
+        rotation.y = ClampDegrees(rotation.y);
+        Debug.Log(rotation);*/
         rotation.y += back.rotation.eulerAngles.y;
         rotation.y += partner.front.rotation.eulerAngles.y;
         return rotation;
@@ -155,8 +158,8 @@ public class Portal : MonoBehaviour
                 rotation.x = 0;
                 rotation.z = 0;
                 player.transform.rotation = rotation;*/
-                //apply force to player
-                movement.ApplyForce(force);
+    //apply force to player
+    movement.ApplyForce(force);
                 player.Teleported();
             }
             else
