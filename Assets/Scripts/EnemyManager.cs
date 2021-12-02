@@ -47,7 +47,7 @@ public class EnemyManager : MonoBehaviour
         {
             quadrant.WakeUp(gameplayUI);
         }
-        SpawnWave();
+        StartCoroutine(NewWaveTimer());
     }
     public void RegisterQuadrant(Quadrant quadrant)
     {
@@ -103,7 +103,13 @@ public class EnemyManager : MonoBehaviour
     }
     private IEnumerator NewWaveTimer()
     {
-        yield return new WaitForSeconds(newWaveTimer);
+        gameplayUI.ToggleNextWave(true);
+        for(float timer = newWaveTimer; timer >= 0.0f; timer-=1.0f)
+        {
+            gameplayUI.SetWaveTimer(timer);
+            yield return new WaitForSeconds(1.0f);
+        }
+        gameplayUI.ToggleNextWave(false);
         SpawnWave();
     }
     public void HunterDied()

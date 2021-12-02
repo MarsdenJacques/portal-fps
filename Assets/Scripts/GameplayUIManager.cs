@@ -23,6 +23,10 @@ public class GameplayUIManager : MonoBehaviour
     [SerializeField]
     private TMP_Text ammoText = null;
     [SerializeField]
+    private GameObject nextWaveText = null;
+    [SerializeField]
+    private TMP_Text nextWaveTimerText = null;
+    [SerializeField]
     private Slider healthSlider = null;
     [SerializeField]
     private GameObject pauseUI = null;
@@ -89,6 +93,14 @@ public class GameplayUIManager : MonoBehaviour
     public void UpdateWave(int newVal)
     {
         waveText.SetText("Wave: " + newVal);
+    }
+    public void ToggleNextWave(bool toggle)
+    {
+        nextWaveText.SetActive(toggle);
+    }
+    public void SetWaveTimer(float newVal)
+    {
+        nextWaveTimerText.SetText(""+newVal);
     }
     public void UpdateHP(float newVal)
     {
