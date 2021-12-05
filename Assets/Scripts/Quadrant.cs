@@ -10,6 +10,12 @@ public class Quadrant : MonoBehaviour
     public List<Transform> spawnPoints;
     private GameplayUIManager gameplayUI = null;
     private Transform player;
+
+
+    private Vector3[] zergSpawns;
+    private Vector3[] hunterSpawns;
+
+
     void Awake()
     {
         GameManager.manager.enemyManager.RegisterQuadrant(this);

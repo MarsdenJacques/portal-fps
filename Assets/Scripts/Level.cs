@@ -5,14 +5,23 @@ using UnityEngine;
 public class Level : MonoBehaviour
 {
     // Start is called before the first frame update
-    void Start()
+    private Quadrant[] quadrants;
+    public void SetQuadrants(Quadrant[] newQuadrants)
     {
-        
+        quadrants = newQuadrants;
     }
-
-    // Update is called once per frame
-    void Update()
+    public void EnableQuadrants()
     {
-        
+        foreach(Quadrant quadrant in quadrants)
+        {
+            quadrant.gameObject.SetActive(true);
+        }
+    }
+    public void DisableQuadrants()
+    {
+        foreach (Quadrant quadrant in quadrants)
+        {
+            quadrant.gameObject.SetActive(false);
+        }
     }
 }

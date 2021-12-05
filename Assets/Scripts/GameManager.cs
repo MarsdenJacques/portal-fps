@@ -10,9 +10,11 @@ public class GameManager : MonoBehaviour
     public bool managerLoaded;
     public bool pathfindingLoaded = false;
     public bool enemyLoaded = false;
+    public bool factoryLoaded = false;
     public int seed;
     public PathfindingManager pathManager = null;
     public EnemyManager enemyManager = null;
+    public LevelFactory levelFactory = null;
     public UnityEvent getNewPaths = new UnityEvent();
     public UnityEvent restartGame = new UnityEvent();
     public UnityEvent quadrantChange = new UnityEvent();
