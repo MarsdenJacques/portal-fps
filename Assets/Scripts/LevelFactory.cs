@@ -9,9 +9,9 @@ public class LevelFactory : MonoBehaviour
     [SerializeField]
     private GameObject[] obstaclePrefabs;
     [SerializeField]
-    private int minQuadrants = 2;
+    private int minQuadrants = 4;
     [SerializeField]
-    private int maxQuadrants = 8;
+    private int maxQuadrants = 4;
     [SerializeField]
     private int minObstacles = 10;
     [SerializeField]
@@ -39,6 +39,7 @@ public class LevelFactory : MonoBehaviour
     }
     public Level RequestLevel(int quadCount)
     {
+        //make coroutine and show progress on loading screen
         return InitLevel(quadCount);
     }
     //quadCount of 0 means random
@@ -52,12 +53,12 @@ public class LevelFactory : MonoBehaviour
         }
         if (quadCount == 0)
         {
-            quadCount = Mathf.RoundToInt(Random.Range(minQuadrants, maxQuadrants));
+            quadCount = Mathf.RoundToInt(Random.Range(minQuadrants, 4.01f));// maxQuadrants));
         }
         else
         {
             //throwing out the unneeded quadcount roll from the current seed
-            garbage = Random.Range(minQuadrants, maxQuadrants);
+            garbage = Random.Range(minQuadrants, 4.01f);// maxQuadrants));
         }
         //only using the quadrants required
         Quadrant[] quadrants = new Quadrant[quadCount];

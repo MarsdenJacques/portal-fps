@@ -68,6 +68,7 @@ public class GameManager : MonoBehaviour
     }
     public void OnGameplayStart()
     {
+        //request level
         inGameplay = true;
         player.OnGameplayStart();
         StopCoroutine(PathfindingTimer());

@@ -32,6 +32,7 @@ public class Player : MonoBehaviour
     //have to disable character controller temporarily to hard-reset the position of the player back to the starting point
     public void OnGameplayStart()
     {
+
         CharacterController controller = gameObject.GetComponent<CharacterController>();
         controller.enabled = false;
         gameObject.transform.position = new Vector3(startPos.x, startPos.y, startPos.z);
